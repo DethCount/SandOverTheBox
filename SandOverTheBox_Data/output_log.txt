@@ -5,6 +5,10 @@ Direct3D:
     Renderer: NVIDIA GeForce GTX 570  (ID=0x1086)
     Vendor:   NVIDIA
     VRAM:     1232 MB
+Default GameObject Tag: Player already registered
+ 
+(Filename:  Line: 67)
+
 Begin MonoManager ReloadAssembly
 Platform assembly: C:\Users\Count\Documents\Unity\SandOverTheBox\SandOverTheBox_Data\Managed\UnityEngine.dll (this message is harmless)
 Loading C:\Users\Count\Documents\Unity\SandOverTheBox\SandOverTheBox_Data\Managed\UnityEngine.dll into Unity Child Domain
@@ -18,7 +22,7 @@ Platform assembly: C:\Users\Count\Documents\Unity\SandOverTheBox\SandOverTheBox_
 Loading C:\Users\Count\Documents\Unity\SandOverTheBox\SandOverTheBox_Data\Managed\Assembly-UnityScript.dll into Unity Child Domain
 Platform assembly: C:\Users\Count\Documents\Unity\SandOverTheBox\SandOverTheBox_Data\Managed\UnityEngine.UI.dll (this message is harmless)
 Loading C:\Users\Count\Documents\Unity\SandOverTheBox\SandOverTheBox_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
-- Completed reload, in  0.365 seconds
+- Completed reload, in  0.087 seconds
 desktop: 1920x1080 60Hz; virtual: 1920x1080 at 0,0
 <RI> Initializing input.
 <RI> Input initialized.
