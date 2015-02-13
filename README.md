@@ -45,6 +45,8 @@ Game Controls:
 - Right click : delete a block at pointed position
 - Maintain left click : precisely positionate a new block
 - Control (left or right) + maintain left click : move an existing block at pointed position
+- 1 : select mud block type
+- 2 : select water block type
 
 Upcoming controls:
 - Shift (left or right) + maintain left click : create a block line from pointed position
@@ -55,6 +57,7 @@ Upcoming controls:
 - Ctrl + Y : redo last canceled action (block creation/move/deletion)
 - Ctrl + Wheel up : switch to previous toolbar
 - Ctrl + Wheel down : switch to next toolbar
+- 1-0 : select block type at given position in current toolbar
 - Wheel up : In third person view, zoom in OR in first person view, switch to previous weapon/tool/block
 - Wheel down : In third person view, zoom out OR in first person view, switch to next weapon/tool/block
 - ² (square) : Activate/Deactivate logs
