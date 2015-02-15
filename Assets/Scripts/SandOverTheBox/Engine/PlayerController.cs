@@ -141,21 +141,67 @@ namespace SandOverTheBox.Engine {
                         blockRotation = hit.collider.transform.rotation;
                     }
 
-                    blockCenter = new Vector3(
-                        ((int) (hit.point.x / BLOCK_WIDTH)) * BLOCK_WIDTH, 
-                        ((int) (hit.point.y / BLOCK_WIDTH)) * BLOCK_WIDTH + (BLOCK_WIDTH / 2),
-                        ((int) (hit.point.z / BLOCK_WIDTH)) * BLOCK_WIDTH
-                    );
+                    Debug.Log("Hit: " + hit.point.ToString());
+                    Debug.Log("Object hitted: " + hit.collider.gameObject.transform.position.ToString());
+
+                    /**
+                     * @todo Refactor this when boxes will have different sizes
+                     *       BLOCK_WITH = box1 position on axis + box2 position on the same axis (float !)
+                     *       BLOCK_WITH / 2f = box1 position on axis (float !)
+                     *       Block size precision is important here for == condition to work
+                     */
+
+                    float blockCenterX = hit.collider.gameObject.transform.position.x;
+                    if ((blockCenterX - hit.point.x) == (BLOCK_WIDTH / 2f)) {
+                        blockCenterX -= BLOCK_WIDTH;
+                    } else if ((hit.point.x - blockCenterX) == (BLOCK_WIDTH / 2f)) {
+                        blockCenterX += BLOCK_WIDTH;
+                    }
+
+                    float blockCenterY = hit.collider.gameObject.transform.position.y;
+                    if ((blockCenterY - hit.point.y) == (BLOCK_WIDTH / 2f)) {
+                        blockCenterY -= BLOCK_WIDTH;
+                    } else if ((hit.point.y - blockCenterY) == (BLOCK_WIDTH / 2f)) {
+                        blockCenterY += BLOCK_WIDTH;
+                    }
+
+                    float blockCenterZ = hit.collider.gameObject.transform.position.z;
+                    if ((blockCenterZ - hit.point.z) == (BLOCK_WIDTH / 2f)) {
+                        blockCenterZ -= BLOCK_WIDTH;
+                    } else if ((hit.point.z - blockCenterZ) == (BLOCK_WIDTH / 2f)) {
+                        blockCenterZ += BLOCK_WIDTH;
+                    }
+
+                    blockCenter = new Vector3(blockCenterX, blockCenterY, blockCenterZ);
+                    Debug.Log("Estimated new block position: " + blockCenter.ToString());
 
                     blockRotation = new Quaternion(0, 0, 0, 0);
                     break;
                 case TAG_TERRAIN:
                     // terrain
+                    Vector3 newHitPoint = ray.GetPoint(hit.distance - 0.1f);
+
+                    /**
+                     * Terrain nearest block approximation following the ray direction on each axis
+                     */
                     blockCenter = new Vector3(
-                        ((int) (hit.point.x / BLOCK_WIDTH)) * BLOCK_WIDTH, 
-                        ((int) (hit.point.y / BLOCK_WIDTH)) * BLOCK_WIDTH + (BLOCK_WIDTH / 2), 
-                        ((int) (hit.point.z / BLOCK_WIDTH)) * BLOCK_WIDTH
+                        (
+                            ray.direction.x < 0 
+                            ? Mathf.Ceil(newHitPoint.x / BLOCK_WIDTH) 
+                            : Mathf.Floor(newHitPoint.x / BLOCK_WIDTH)
+                        ) * BLOCK_WIDTH, 
+                        (
+                            ray.direction.y < 0 
+                            ? Mathf.Ceil(newHitPoint.y / BLOCK_WIDTH) 
+                            : Mathf.Floor(newHitPoint.y / BLOCK_WIDTH)
+                        ) * BLOCK_WIDTH,
+                        (
+                            ray.direction.z < 0 
+                            ? Mathf.Ceil(newHitPoint.z / BLOCK_WIDTH) 
+                            : Mathf.Floor(newHitPoint.z / BLOCK_WIDTH)
+                        ) * BLOCK_WIDTH
                     );
+
                     blockRotation = new Quaternion(0, 0, 0, 0);
                     break;
                 case null:
