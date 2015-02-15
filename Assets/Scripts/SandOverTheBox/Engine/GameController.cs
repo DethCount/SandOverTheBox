@@ -18,7 +18,13 @@ namespace SandOverTheBox.Engine {
         private ArrayList blockTypes;
         private ArrayList toolBars;
         private int selectedToolBarIndex;
+        private bool controlsEnabled;
         private GameObject firstPersonController;
+
+        public bool ControlsEnabled()
+        {
+            return controlsEnabled;
+        }
 
         public int GetSelectedToolBarIndex()
         {
@@ -43,6 +49,8 @@ namespace SandOverTheBox.Engine {
         void Start()
         {
             Screen.showCursor = false;
+            controlsEnabled = true;
+
             if (instance == null) {
                 instance = this;
             } else if(instance != this) {
@@ -56,7 +64,6 @@ namespace SandOverTheBox.Engine {
 
         void Init()
         {
-
             // init block types
             InitBlockTypes();
             InitToolBars();
@@ -66,7 +73,7 @@ namespace SandOverTheBox.Engine {
                 loadingScreen.SetActive(false);
             }
 
-            SetSelectedToolBar(0);
+            SelectToolBar(0);
 
             InitPlayerController();
         }
@@ -107,6 +114,11 @@ namespace SandOverTheBox.Engine {
                 toolBar.AddBlockType(blockType);
                 key++;
             }
+
+            while (toolBar.Count() < TOOLBAR_MAX_ITEMS) {
+                key = toolBar.Count();
+                toolBar.AddEmptyItem(defaultBlockButtonImage);
+            }
         }
 
         private void InitPlayerController()
@@ -118,7 +130,7 @@ namespace SandOverTheBox.Engine {
             );
         }
 
-        public void SetSelectedToolBar(int key)
+        public void SelectToolBar(int key)
         {
             selectedToolBarIndex = key;
             GetSelectedToolBar().show(toolBarPanel, toolBarButtonPrefab);
@@ -128,6 +140,7 @@ namespace SandOverTheBox.Engine {
         {
             if (Input.GetKeyDown(KeyCode.Escape)) {
                 Screen.showCursor = !Screen.showCursor;
+                controlsEnabled = !controlsEnabled;
             }
         }
 

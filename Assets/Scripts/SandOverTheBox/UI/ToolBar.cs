@@ -7,6 +7,7 @@ using UnityEngine.Events;
 namespace SandOverTheBox.Engine {
     public class ToolBar : Object, IToolBar {
         private ArrayList blockTypes;
+        private ArrayList emptyItems;
         private string localName;
         private int selectedBlockTypeIndex;
         private IGameController controller;
@@ -26,6 +27,11 @@ namespace SandOverTheBox.Engine {
             blockTypes.Add(blockType);
         }
 
+        public void AddEmptyItem(Sprite buttonImage)
+        {
+            emptyItems.Add(buttonImage);
+        }
+
         public BlockType GetBlockType(int key)
         {
             if (blockTypes.Count <= key) {
@@ -37,7 +43,7 @@ namespace SandOverTheBox.Engine {
 
         public int Count()
         {
-            return blockTypes.Count;
+            return blockTypes.Count + emptyItems.Count;
         }
 
         public BlockType GetSelectedBlockType()
@@ -56,6 +62,7 @@ namespace SandOverTheBox.Engine {
         {
             this.localName = name;
             this.blockTypes = new ArrayList();
+            this.emptyItems = new ArrayList();
             this.selectedBlockTypeIndex = 0;
         }
 
@@ -67,9 +74,21 @@ namespace SandOverTheBox.Engine {
                 int localKey = key;
                 button = (Button) Instantiate(buttonPrefab, new Vector3(0, 0, 0), Quaternion.identity);
                 button.GetComponent<Image>().sprite = blockType.GetButtonImage();
+                button.GetComponentInChildren<Text>().text = "" + ((localKey + 1) % 10);
                 button.transform.SetParent(panel.transform, false);
                 LayoutRebuilder.MarkLayoutForRebuild (button.transform as RectTransform);
                 button.onClick.AddListener(() => { SelectBlockType(localKey); });
+                key++;
+            }
+
+            foreach (Sprite buttonImage in emptyItems) {
+                int localKey = key;
+                button = (Button) Instantiate(buttonPrefab, new Vector3(0, 0, 0), Quaternion.identity);
+                button.GetComponent<Image>().sprite = buttonImage;
+                button.GetComponentInChildren<Text>().text = "" + ((localKey + 1) % 10);
+                button.interactable = false;
+                button.transform.SetParent(panel.transform, false);
+                LayoutRebuilder.MarkLayoutForRebuild (button.transform as RectTransform);
                 key++;
             }
 

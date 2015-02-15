@@ -11,9 +11,8 @@ namespace SandOverTheBox.Engine {
         const string TAG_BLOCK = "Block";
         const string TAG_TERRAIN = "Terrain";
 
-        public GameObject pointer;
-        public LineRenderer line;
-
+        private bool enableControls;
+        private Camera cam;
         private bool constructingBlock;
         private float pointerMaxDistance;
         private GameObject constructedBlock;
@@ -30,32 +29,38 @@ namespace SandOverTheBox.Engine {
         }
 
         void Init () {
+            enableControls = true;
             constructingBlock = false;
             constructedBlock = null;
-            line = pointer.GetComponent<LineRenderer>();
+            cam = GetComponentInChildren<Camera>();
+        }
+
+        void ToggleControls()
+        {
+            enableControls = !enableControls;
         }
 
         void FixedUpdate () {
-            pointer.transform.localPosition.Set (0, 1.6f, 0);
-            if (constructingBlock) {
+            if (constructingBlock || !controller.ControlsEnabled()) {
                 return;
             }
+
             StartCoroutine ("ConstructionRoutine");
         }
 
         IEnumerator ConstructionRoutine ()
         {
             constructingBlock = true;
-            Transform origin = pointer.transform.parent;
+            Transform origin = cam.transform;
             Ray ray = new Ray(origin.position, origin.forward);
             RaycastHit hit;
 
-            while (Input.GetButton ("Fire1") && !Screen.showCursor) {
+            while (Input.GetButton ("Fire1")) {
                 if (Physics.Raycast(origin.position, origin.forward, out hit, POINTER_MAX_DISTANCE)) {
                     ShowBlockConstruct(ray, hit);
                 }
 
-                yield return null;
+                yield return new WaitForSeconds(0.2f);
             }
             
             constructingBlock = false;
@@ -67,8 +72,6 @@ namespace SandOverTheBox.Engine {
                 constructedBlock.renderer.material.SetColor("_Color", color);
                 constructedBlock = null;
             }
-
-            line.enabled = false;
 
             if (Input.GetKey(KeyCode.Alpha1) || Input.GetKey(KeyCode.Keypad1)) {
                 controller.SelectBlockType(0);
@@ -110,10 +113,12 @@ namespace SandOverTheBox.Engine {
                 controller.SelectBlockType(9);
             }
 
-            if (Input.GetButtonDown ("Fire2")) {
+            if (Input.GetButtonUp ("Fire2")) {
+                controller.Log("Fire2 UP!");
                 if (Physics.Raycast(origin.position, origin.forward, out hit, POINTER_MAX_DISTANCE)) {
                     DestroyBlock(ray, hit);
                 }
+                yield return new WaitForSeconds(0.2f);
             }
         }
 
