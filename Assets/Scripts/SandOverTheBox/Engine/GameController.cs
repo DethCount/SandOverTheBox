@@ -3,12 +3,21 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
+using SandOverTheBox.Engine.Terrain;
+
 namespace SandOverTheBox.Engine {
     public class GameController : MonoBehaviour, IGameController {
         const int TOOLBAR_MAX_ITEMS = 10;
+        const int TILE_WIDTH = 32;
+        const int TILE_HEIGHT = 4;
+        const int TILE_RANDOMNESS = 4;
+        const int PLAYER_VISION = 20;
 
         public static GameController instance;
         public GameObject[] blocksPrefabs;
+        public GameObject voxelPrefab;
+        public Material grass;
+        public Material water;
         public Sprite[] blocksButtonImages;
         public Sprite defaultBlockButtonImage;
         public GameObject toolBarPanel;
@@ -19,7 +28,8 @@ namespace SandOverTheBox.Engine {
         private ArrayList toolBars;
         private int selectedToolBarIndex;
         private bool controlsEnabled;
-        private GameObject firstPersonController;
+        private TerrainGenerator terrainGenerator;
+        public GameObject playerController;
 
         public bool ControlsEnabled()
         {
@@ -48,6 +58,8 @@ namespace SandOverTheBox.Engine {
 
         void Start()
         {
+            terrainGenerator = new TerrainGenerator();
+
             Screen.showCursor = false;
             controlsEnabled = true;
 
@@ -60,6 +72,22 @@ namespace SandOverTheBox.Engine {
             Init();
 
             this.Log("Game started!");
+        }
+
+        private void UpdateTerrain()
+        {
+            StartCoroutine(
+                terrainGenerator.UpdateTerrain(
+                    voxelPrefab, 
+                    grass,
+                    water,
+                    TILE_WIDTH, 
+                    TILE_HEIGHT, 
+                    TILE_RANDOMNESS,
+                    playerController.transform,
+                    PLAYER_VISION
+                )
+            );
         }
 
         void Init()
@@ -123,9 +151,9 @@ namespace SandOverTheBox.Engine {
 
         private void InitPlayerController()
         {
-            firstPersonController = (GameObject) Instantiate(
+            playerController = (GameObject) Instantiate(
                 firstPersonControllerPrefab, 
-                transform.position, 
+                new Vector3(transform.position.x, (TILE_HEIGHT * 2) + 1, transform.position.z), 
                 transform.rotation
             );
         }
@@ -138,6 +166,8 @@ namespace SandOverTheBox.Engine {
 
         void FixedUpdate()
         {
+            UpdateTerrain();
+
             if (Input.GetKeyDown(KeyCode.Escape)) {
                 Screen.showCursor = !Screen.showCursor;
                 controlsEnabled = !controlsEnabled;
