@@ -9,6 +9,9 @@ Done :
 
 Work in progress:
 - Create, move, delete different types of blocks
+- Skybox
+- Terrain generation
+- Tile generation
 
 What may come next:
 - Highlight selected toolbar item
@@ -17,9 +20,6 @@ What may come next:
 - Highlight moving block
 - Cancel/redo/copy/cut/paste/linear edition
 - Third person view
-- Skybox
-- Terrain generation
-- Tile generation
 - Merge several blocks
 - Use blocks of different base shapes and scales
 - Inventory / containers / Items
